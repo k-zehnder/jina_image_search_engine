@@ -3,3 +3,6 @@ Building a basic image search engine with Jina
 
 ## Example 1
 ![Work in progress](demo_img.png)
+
+## Example 2
+![Work in progress](scores.png)
