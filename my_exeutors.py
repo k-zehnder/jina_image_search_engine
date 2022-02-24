@@ -37,6 +37,7 @@ class MyIndexer(Executor):
         # construct left/right document arrays
         right_da = self._docs
         left_da = DocumentArray(docs[0]) # query
+        #left_da = docs
 
         # match document arrays by use of embedding (feature vector similarity)
         left_da.match(right_da, limit=9)

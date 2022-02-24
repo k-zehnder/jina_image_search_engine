@@ -31,10 +31,11 @@ f = (
     .add(uses=MyExec)
 )
 
+query = DocumentArray(indexing_documents[0])
 with f:
     f.post("/test", inputs=indexing_documents)
     f.post("/index", inputs=indexing_documents)
-    f.post("/match", inputs=indexing_documents)
+    f.post("/match", inputs=query)
 
     # errors if mess up dimensions with brackets
     # f.post("/match", inputs=[indexing_documents])
