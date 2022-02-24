@@ -23,26 +23,12 @@ def preproc(d: Document):
 indexing_documents = DocumentArray.from_files("./data/flag_imgs/*.jpg", size=10000)
 indexing_documents.apply(preproc)
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
-
 indexing_documents.embed(model, device="cpu", to_numpy=True)
 
 f = (
     Flow(port_expose=8080, protocol='http')
     .add(uses=MyIndexer)
     .add(uses=MyExec)
-    # .add(
-    #     name='indexer',
-    #     uses='jinahub://PQLiteIndexer',
-    #     uses_with={'dim': 512},
-    #     shards=2,
-    #     install_requirements=True
-
-    # )
-    # .add(
-    #     name='encoder',
-    #     uses='jinahub://CLIPImageEncoder',
-    #     install_requirements=True
-    # )
 )
 
 query = indexing_documents[0]
