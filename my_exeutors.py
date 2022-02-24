@@ -31,20 +31,22 @@ class MyIndexer(Executor):
         :param kwargs: other keyword arguments
         """
         self._docs.extend(docs)
+        # self._docs = docs
 
     @requests(on=['/match'])
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
-        """Append best matches to each document in docs
-        :param docs: documents that are searched
-        :param parameters: dictionary of pairs (parameter,value)
-        :param kwargs: other keyword arguments
-        """
-        docs[0].match(
-            self._docs,
-            metric='cosine',
-            normalization=(1, 0)
-        )
+        # construct left/right document arrays
+        right_da = self._docs
+        left_da = DocumentArray(docs[0]) # query
 
+        # match document arrays by use of embedding (feature vector similarity)
+        left_da.match(right_da, limit=9)
+
+        # show cosine distance of top 9 from query
+        for d in left_da:
+            for m in d.matches:
+                print(f"query_uri: {d.uri}, match_uri: {m.uri}, scores: {m.scores['cosine'].value}")  
+     
     def close(self):
         """
         Stores the DocumentArray to disk
