@@ -13,7 +13,7 @@ class MyExec(Executor):
     def foo(self, docs: 'DocumentArray', **kwargs):
         print(f'Calling foo')
         return docs
-        
+
 
 class MyIndexer(Executor):
     """
@@ -32,7 +32,7 @@ class MyIndexer(Executor):
         """
         self._docs.extend(docs)
 
-    @requests(on=['/match'])
+    @requests(on='/match')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
         # construct left/right document arrays
         right_da = self._docs
