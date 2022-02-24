@@ -140,7 +140,7 @@ services:
     - --polling
     - ANY
     - --port-in
-    - '58263'
+    - '56474'
     - --expose-endpoints
     - '{}'
     - --protocol
@@ -155,9 +155,9 @@ services:
     - GATEWAY
     expose:
     - '8080'
-    - '58263'
+    - '56474'
     ports:
     - 8080:8080
-    - 58263:58263
+    - 56474:56474
     networks:
     - jina-network

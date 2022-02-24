@@ -6,17 +6,12 @@ import os
 import torchvision
 from shutil import rmtree
 
+from my_exeutors import MyExec
+
 # First let’s define a client:
 client = Client(host='localhost', protocol='http', port=8080)
 client.show_progress = True
 
-workspace = './workspace'
-os.environ['JINA_WORKSPACE'] = workspace
-os.environ['JINA_PORT'] = os.environ.get('JINA_PORT', str(45678))
-
-if os.path.exists(workspace):
-    print(f'Workspace at {workspace} exists. Will delete')
-    rmtree(workspace)
 
 # Convert to tensor, normalize so they're all similar enough
 def preproc(d: Document):
@@ -49,3 +44,4 @@ print("--")
 for idx, match in enumerate(matches):
     score = match.scores['cosine'].value
     print(f'> {idx:>2d}({score:.2f}). {match.uri}')
+
