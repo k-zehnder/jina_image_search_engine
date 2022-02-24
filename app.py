@@ -1,8 +1,17 @@
+import os
 import torchvision
 from jina import Flow
+from shutil import rmtree
 from docarray import DocumentArray, Document
 from my_exeutors import MyExec, MyIndexer
 
+
+workspace = './workspace'
+os.environ['JINA_WORKSPACE'] = workspace
+
+if os.path.exists(workspace):
+    print(f'Workspace at {workspace} exists. Will delete')
+    rmtree(workspace)
 
 # Convert to tensor, normalize so they're all similar enough
 def preproc(d: Document):
