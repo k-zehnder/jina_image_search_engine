@@ -31,14 +31,26 @@ f = (
     .add(uses=MyExec)
 )
 
+def print_response_parameters(resp):
+    print(f' {resp.to_dict()["parameters"]}')
+
+def print_results(resp):
+    # resp is <jina.types.request.data.DataRequest>
+    print(f"resp: {resp}") 
+
+    data = resp.to_dict()["data"]
+    for d in data:
+        for m in d["matches"]:
+            print(f"query_uri: {d['uri']}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
+
 query = DocumentArray(indexing_documents[0])
 
 with f:
     f.post("/index", inputs=indexing_documents)
-    f.post("/search", parameters={'limit': 9}, inputs=query)
+    f.post("/search", parameters={'limit': 9}, inputs=query, on_done=print_response_parameters)
     f.post("/status", inputs=[])
-    f.post("/printer", inputs=[])
+    result = f.post("/returner", inputs=[], on_done=print_results)
 
     # f.post("/persist", inputs=[])
 
-
+# print(result)

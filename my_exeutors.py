@@ -52,11 +52,12 @@ class MyIndexer(Executor):
         """
         return {"internal_parameter": self.parameter}
 
-    @requests(on='/printer')
-    def printer(self, **kwargs):
-        for d in self.result:
-            for m in d.matches:
-                print(f"query_uri: {d.uri}, match_uri: {m.uri}, scores: {m.scores['cosine'].value}")
+    @requests(on='/returner')
+    def returner(self, **kwargs):
+        """
+        Return result stored as class attribute
+        """
+        return self.result
 
     def close(self):
         """
