@@ -32,11 +32,13 @@ f = (
 )
 
 query = DocumentArray(indexing_documents[0])
-with f:
-    f.post("/test", inputs=indexing_documents)
-    f.post("/index", inputs=indexing_documents)
-    f.post("/match", inputs=query)
 
-    # errors if mess up dimensions with brackets
-    # f.post("/match", inputs=[indexing_documents])
-    # f.post("/close", inputs=[])
+with f:
+    f.post("/index", inputs=indexing_documents)
+    f.post("/search", parameters={'limit': 9}, inputs=query)
+    f.post("/status", inputs=[])
+    f.post("/printer", inputs=[])
+
+    # f.post("/persist", inputs=[])
+
+

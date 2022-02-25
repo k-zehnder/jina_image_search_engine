@@ -14,15 +14,16 @@ class MyExec(Executor):
         print(f'Calling foo')
         return docs
 
-
 class MyIndexer(Executor):
     """
     Executor with basic exact search using cosine distance
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, parameter=0, **kwargs):
         super().__init__(**kwargs)
         self._docs = DocumentArray()
+        self.result = DocumentArray()
+        self.parameter = parameter
 
     @requests(on='/index')
     def index(self, docs: 'DocumentArray', **kwargs):
@@ -32,27 +33,36 @@ class MyIndexer(Executor):
         """
         self._docs.extend(docs)
 
-    @requests(on='/match')
+    @requests(on='/search')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
         # construct left/right document arrays
         right_da = self._docs
         left_da = DocumentArray(docs[0]) # query
-        #left_da = docs
 
         # match document arrays by use of embedding (feature vector similarity)
-        left_da.match(right_da, limit=9)
+        left_da.match(right_da, limit=parameters["limit"])
 
-        # show cosine distance of top 9 from query
-        for d in left_da:
-            for m in d.matches:
-                print(f"query_uri: {d.uri}, match_uri: {m.uri}, scores: {m.scores['cosine'].value}")  
+        # AFTER matching, persist state of query as result
+        self.result.extend(left_da)
      
+    @requests(on='/status')
+    def status(self, **kwargs):
+        """
+        Display status of object
+        """
+        return {"internal_parameter": self.parameter}
+
+    @requests(on='/printer')
+    def printer(self, **kwargs):
+        for d in self.result:
+            for m in d.matches:
+                print(f"query_uri: {d.uri}, match_uri: {m.uri}, scores: {m.scores['cosine'].value}")
+
     def close(self):
         """
         Stores the DocumentArray to disk
         """
         self._docs.save("./")
-
 
 class MyConverter(Executor):
     """

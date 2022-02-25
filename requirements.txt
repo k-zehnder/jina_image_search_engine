@@ -1,0 +1,9 @@
+bing_image_downloader==1.1.2
+docarray==0.7.1
+jina==3.0.2
+numpy==1.22.2
+opencv_python==4.5.5.62
+requests==2.27.1
+selenium==4.1.2
+torchvision==0.10.0+rocm4.2
+tqdm==4.62.3
