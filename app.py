@@ -50,5 +50,5 @@ with f:
         montage.addResult(result, text=f"#{i+1} > {score:.2f})")
 
         # show the output image of results
-        cv2.imshow("Results", imutils.resize(montage.montage, height=200))
+        cv2.imshow("Results", imutils.resize(montage.montage, height=500))
         cv2.waitKey(0)
