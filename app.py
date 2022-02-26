@@ -3,20 +3,13 @@ import torchvision
 from jina import Flow
 from shutil import rmtree
 from docarray import DocumentArray, Document
-from my_exeutors import MyMeans, MyIndexer
-from image_helpers.resultsmontage import ResultsMontage
 import cv2
 import imutils
 
+from image_helpers.resultsmontage import ResultsMontage
 from image_helpers.utils import print_response_parameters, print_match_results, preproc
+from my_exeutors import MyMeans, MyIndexer
 
-
-workspace = './workspace'
-os.environ['JINA_WORKSPACE'] = workspace
-
-if os.path.exists(workspace):
-    print(f'Workspace at {workspace} exists. Will delete')
-    rmtree(workspace)
 
 
 indexing_documents = DocumentArray.from_files("./data/flag_imgs/*.jpg", size=10000)
