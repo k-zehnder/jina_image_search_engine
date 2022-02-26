@@ -6,7 +6,7 @@ import os
 import torchvision
 from shutil import rmtree
 
-from my_exeutors import MyExec
+from my_exeutors import MyMeans, MyIndexer
 
 # First let’s define a client:
 client = Client(host='localhost', protocol='http', port=8080)
@@ -45,3 +45,7 @@ for idx, match in enumerate(matches):
     score = match.scores['cosine'].value
     print(f'> {idx:>2d}({score:.2f}). {match.uri}')
 
+
+res = queried_docs.to_dict()[0]
+for m in res["matches"]:
+    print(f"query_uri: {query_doc[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")

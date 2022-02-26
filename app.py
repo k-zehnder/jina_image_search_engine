@@ -4,7 +4,9 @@ from jina import Flow
 from shutil import rmtree
 from docarray import DocumentArray, Document
 from my_exeutors import MyMeans, MyIndexer
-
+from resultsmontage import ResultsMontage
+import cv2
+import imutils
 
 workspace = './workspace'
 os.environ['JINA_WORKSPACE'] = workspace
@@ -47,12 +49,26 @@ query = DocumentArray(indexing_documents[0])
 
 with f:
     f.post("/index", inputs=indexing_documents)
-    f.post("/search", parameters={'limit': 9}, inputs=query, on_done=print_match_results)
-    f.post("/status", inputs=[])
+    res = f.post("/search", parameters={'limit': 9}, inputs=query)
+    # f.post("/status", inputs=[])
 
-    means = f.post("/means", inputs=DocumentArray(indexing_documents))
-    print("means", means[0].text)
-    # f.post("/persist", inputs=[])
+    # means = f.post("/means", inputs=DocumentArray(indexing_documents))
+    # print("means", means[0].text)
 
-# print(result)
+    # load the query image, display it, describe it
+    print("[INFO] describing query...")
+    query = cv2.imread(query[0].uri)
+    print(query)
+    cv2.imshow("Query", imutils.resize(query, width=200))
+    cv2.waitKey(0)
+    
+    res = res.to_dict()[0]
+    montage = ResultsMontage((240, 320), 5, 20)
+    for i, m in enumerate(res["matches"]):
+        print(f"query_uri: query, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
+        result = cv2.imread(m["uri"])
+        montage.addResult(result, text=f"#{i+1}")
 
+        # show the output image of results
+        cv2.imshow("Results", imutils.resize(montage.montage, height=200))
+        cv2.waitKey(0)
