@@ -25,34 +25,23 @@ indexing_documents.apply(preproc)
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 indexing_documents.embed(model, device="cpu", to_numpy=True)
 
-f = (
-    Flow(port_expose=8080, protocol='http')
-    .add(uses=MyIndexer)
-    .add(uses=MyMeans)
-)
+if __name__ == "__main__":
+    indexing_documents = DocumentArray.from_files("./data/flag_imgs/*.jpg", size=10000)
+    indexing_documents.apply(preproc)
+    model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
+    indexing_documents.embed(model, device="cpu", to_numpy=True)
 
-def print_response_parameters(resp):
-    print(f' {resp.to_dict()["parameters"]}')
+    m = MyMeans()
+    means = m.means(indexing_documents)
+    print(means[0].text)
 
-def print_match_results(resp):
-    # resp is <jina.types.request.data.DataRequest>
+    idxer = MyIndexer()
+    idxer.index(indexing_documents)
 
-    data = resp.to_dict()["data"]
-    for d in data:
-        for m in d["matches"]:
-            print(f"query_uri: {d['uri']}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
+    q = indexing_documents[0]
+    q = DocumentArray(q)
 
-
-query = DocumentArray(indexing_documents[0])
-
-with f:
-    f.post("/index", inputs=indexing_documents)
-    f.post("/search", parameters={'limit': 9}, inputs=query, on_done=print_match_results)
-    f.post("/status", inputs=[])
-
-    means = f.post("/means", inputs=DocumentArray(indexing_documents))
-    print("means", means[0].text)
-    # f.post("/persist", inputs=[])
-
-# print(result)
-
+    res = idxer.search(q, parameters={'limit': 9})
+    res = res.to_dict()[0]
+    for m in res["matches"]:
+        print(f"query_uri: {q[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")

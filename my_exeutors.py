@@ -1,18 +1,25 @@
 import os
+from sqlite3 import paramstyle
 from typing import Dict
 
 import numpy as np
 from jina import Executor, requests
-from docarray import DocumentArray
+from docarray import DocumentArray, Document
 
 
-class MyExec(Executor):
-    @requests(
-        on=['/test']
-    )
-    def foo(self, docs: 'DocumentArray', **kwargs):
-        print(f'Calling foo')
-        return docs
+class MyMeans(Executor):
+    def __init__(self, parameter=True, **kwargs):
+        super().__init__(**kwargs)
+        self.parameter = parameter
+
+    @requests(on='/means')
+    def means(self, docs: 'DocumentArray', **kwargs):
+        print(f'[INFO] Calling means')
+        heights = []
+        for doc in docs:
+            heights.append(np.mean(doc.tensor))
+        da = Document(text=f"mean height: {np.mean(heights)}")
+        return DocumentArray(da)         
 
 class MyIndexer(Executor):
     """
@@ -22,7 +29,6 @@ class MyIndexer(Executor):
     def __init__(self, parameter=0, **kwargs):
         super().__init__(**kwargs)
         self._docs = DocumentArray()
-        self.result = DocumentArray()
         self.parameter = parameter
 
     @requests(on='/index')
@@ -42,8 +48,8 @@ class MyIndexer(Executor):
         # match document arrays by use of embedding (feature vector similarity)
         left_da.match(right_da, limit=parameters["limit"])
 
-        # AFTER matching, persist state of query as result
-        self.result.extend(left_da)
+        # return AFTER matching
+        return DocumentArray(left_da)
      
     @requests(on='/status')
     def status(self, **kwargs):
@@ -51,13 +57,6 @@ class MyIndexer(Executor):
         Display status of object
         """
         return {"internal_parameter": self.parameter}
-
-    @requests(on='/returner')
-    def returner(self, **kwargs):
-        """
-        Return result stored as class attribute
-        """
-        return self.result
 
     def close(self):
         """
