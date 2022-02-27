@@ -15,12 +15,12 @@ DATA_DIR = "./data/flag_imgs/*.jpg"
 def generate_docs(DATA_DIR, num_docs=10000):
     indexing_documents = DocumentArray.from_files(DATA_DIR, size=num_docs)
     indexing_documents.apply(preproc)
-    model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
+    model = torchvision.models.resnet50(pretrained=True)
     indexing_documents.embed(model, device="cpu", to_numpy=True)
     return indexing_documents
 
 def print_response_parameters(resp):
-    print(f' {resp.to_dict()["parameters"]}')
+    print(f'{resp.to_dict()["parameters"]}')
 
 def print_match_results(resp):
     # resp is <jina.types.request.data.DataRequest>
