@@ -23,18 +23,21 @@ f = (
     .add(uses=MyMeans)
 )
 
-def main(task: str) -> None: # args
+def main() -> None: # args
     indexing_documents = generate_docs(DATA_DIR)
     query = DocumentArray(indexing_documents[0])
 
     with f:
         # index()
         f.post("/index", inputs=indexing_documents)
-        
+
         # search(limit)
         res = f.post("/search", parameters={'limit': 9}, inputs=query)
+        
+        # status()
         f.post("/status", inputs=[])
 
+        # means(indexing_documents)
         means = f.post("/means", inputs=DocumentArray(indexing_documents), on_done=print_mean_results)
         # print("means", means[0].text)
 
@@ -42,4 +45,4 @@ def main(task: str) -> None: # args
 
 
 if __name__ == "__main__":
-    main("test")
+    main()
