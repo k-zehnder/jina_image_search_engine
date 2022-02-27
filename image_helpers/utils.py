@@ -42,7 +42,7 @@ def show_montage(query, res):
         # print(f"query_uri: {query[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
         result = cv2.imread(m["uri"]) 
         score = m['scores']['cosine']['value']
-        montage.addResult(result, text=f"#{i+1} > {score:.2f})")
+        montage.addResult(result, text=f"#{i+1} > {score:.2f}")
 
         # show the output image of results
         cv2.imshow("Results", imutils.resize(montage.montage, height=500))
