@@ -8,7 +8,7 @@ import imutils
 
 from image_helpers.resultsmontage import ResultsMontage
 from image_helpers.utils import print_response_parameters, print_match_results, preproc, show_montage, generate_docs
-from my_exeutors import MyMeans, MyIndexer
+from executors.my_exeutors import MyMeans, MyIndexer
 
 
 DATA_DIR = "./data/flag_imgs/*.jpg"

@@ -39,7 +39,6 @@ def show_montage(query, res):
     res = res.to_dict()[0]
     montage = ResultsMontage((240, 320), 5, 20)
     for i, m in enumerate(res["matches"]):
-        # print(f"query_uri: {query[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
         result = cv2.imread(m["uri"]) 
         score = m['scores']['cosine']['value']
         montage.addResult(result, text=f"#{i+1} > {score:.2f}")
@@ -55,3 +54,6 @@ def preproc(d: Document):
              .set_image_tensor_shape((80, 60))  # ensure all images right size (dataset image size _should_ be (80, 60))
              .set_image_tensor_normalization()  # normalize color 
              .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
+
+# TODO: functionalize me
+# print(f"query_uri: {query[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
