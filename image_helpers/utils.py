@@ -9,16 +9,6 @@ import imutils
 from .resultsmontage import ResultsMontage
 
 
-DATA_DIR = "./data/flag_imgs/*.jpg"
-
-
-def generate_docs(DATA_DIR, num_docs=10000):
-    indexing_documents = DocumentArray.from_files(DATA_DIR, size=num_docs)
-    indexing_documents.apply(preproc)
-    model = torchvision.models.resnet50(pretrained=True)
-    indexing_documents.embed(model, device="cpu", to_numpy=True)
-    return indexing_documents
-
 def print_response_parameters(resp):
     print(f'{resp.to_dict()["parameters"]}')
 
@@ -47,13 +37,6 @@ def show_montage(query, res):
         cv2.imshow("Results", imutils.resize(montage.montage, height=500))
         cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-# Convert to tensor, normalize so they're all similar enough
-def preproc(d: Document):
-    return (d.load_uri_to_image_tensor()  # load
-             .set_image_tensor_shape((80, 60))  # ensure all images right size (dataset image size _should_ be (80, 60))
-             .set_image_tensor_normalization()  # normalize color 
-             .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
 # TODO: functionalize me
 # print(f"query_uri: {query[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")

@@ -1,4 +1,5 @@
 import os
+import glob
 import torchvision
 from jina import Flow
 from shutil import rmtree
@@ -6,8 +7,9 @@ from docarray import DocumentArray, Document
 import cv2
 import imutils
 
+
 from image_helpers.resultsmontage import ResultsMontage
-from image_helpers.utils import print_response_parameters, print_match_results, preproc, show_montage, generate_docs
+from image_helpers.utils import print_response_parameters, print_match_results, show_montage
 from executors.my_exeutors import MyMeans, MyIndexer
 
 
@@ -23,20 +25,23 @@ f = (
     .add(uses=MyMeans)
 )
 
+
+def my_input(DATA_DIR):
+    image_uris = glob.glob(DATA_DIR)
+    for image_uri in image_uris:
+        yield Document(uri=image_uri)
+
 def main() -> None:
-    indexing_documents = generate_docs(DATA_DIR)
-    query = DocumentArray(indexing_documents[0])
-
     with f:
-        f.post("/index", inputs=indexing_documents)
-
-        res = f.post("/search", parameters={'limit': 9}, inputs=query)
+        returned_query = f.post("/index", inputs=my_input(DATA_DIR))
+        
+        res = f.post("/search", parameters={'limit': 9}, inputs=returned_query)
 
         f.post("/status", inputs=[])
 
-        f.post("/means", inputs=DocumentArray(indexing_documents), on_done=print_mean_results)
+        f.post("/means", inputs=my_input(DATA_DIR), on_done=print_mean_results)
 
-    show_montage(query, res)
+    show_montage(returned_query, res)
 
 
 if __name__ == "__main__":

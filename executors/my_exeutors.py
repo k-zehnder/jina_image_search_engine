@@ -1,10 +1,22 @@
 import os
 from sqlite3 import paramstyle
 from typing import Dict
+import torchvision 
 
 import numpy as np
 from jina import Executor, requests
 from docarray import DocumentArray, Document
+
+
+DATA_DIR = "./data/flag_imgs/*.jpg"
+
+
+# Convert to tensor, normalize so they're all similar enough
+def preproc(d: Document):
+    return (d.load_uri_to_image_tensor()  # load
+             .set_image_tensor_shape((80, 60))  # ensure all images right size (dataset image size _should_ be (80, 60))
+             .set_image_tensor_normalization()  # normalize color 
+             .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
 
 class MyMeans(Executor):
@@ -37,7 +49,11 @@ class MyIndexer(Executor):
         :param docs: DocumentArray containing Documents
         :param kwargs: other keyword arguments
         """
+        docs.apply(preproc)
+        model = torchvision.models.resnet50(pretrained=True)
+        docs.embed(model, device="cpu", to_numpy=True)
         self._docs.extend(docs)
+        return DocumentArray(self._docs[0])
 
     @requests(on='/search')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
