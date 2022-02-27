@@ -7,16 +7,10 @@ import numpy as np
 from jina import Executor, requests
 from docarray import DocumentArray, Document
 
+from image_helpers import utils
+
 
 DATA_DIR = "./data/flag_imgs/*.jpg"
-
-
-# Convert to tensor, normalize so they're all similar enough
-def preproc(d: Document):
-    return (d.load_uri_to_image_tensor()  # load
-             .set_image_tensor_shape((80, 60))  # ensure all images right size (dataset image size _should_ be (80, 60))
-             .set_image_tensor_normalization()  # normalize color 
-             .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
 
 class MyMeans(Executor):
@@ -29,7 +23,7 @@ class MyMeans(Executor):
 
     @requests(on='/means')
     def means(self, docs: 'DocumentArray', **kwargs):
-        docs.apply(preproc)
+        docs.apply(utils.preproc)
         model = torchvision.models.resnet50(pretrained=True)
         docs.embed(model, device="cpu", to_numpy=True)
         heights = [np.mean(doc.tensor) for doc in docs]
@@ -52,11 +46,10 @@ class MyIndexer(Executor):
         :param docs: DocumentArray containing Documents
         :param kwargs: other keyword arguments
         """
-        docs.apply(preproc)
+        docs.apply(utils.preproc)
         model = torchvision.models.resnet50(pretrained=True)
         docs.embed(model, device="cpu", to_numpy=True)
         self._docs.extend(docs)
-        return DocumentArray(self._docs[-1])
 
     @requests(on='/search')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
