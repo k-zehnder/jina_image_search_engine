@@ -29,6 +29,9 @@ class MyMeans(Executor):
 
     @requests(on='/means')
     def means(self, docs: 'DocumentArray', **kwargs):
+        docs.apply(preproc)
+        model = torchvision.models.resnet50(pretrained=True)
+        docs.embed(model, device="cpu", to_numpy=True)
         heights = [np.mean(doc.tensor) for doc in docs]
         format_txt = f"mean of means for pixel height: {np.mean(heights)}"
         return DocumentArray(Document(text=format_txt))        
@@ -53,7 +56,7 @@ class MyIndexer(Executor):
         model = torchvision.models.resnet50(pretrained=True)
         docs.embed(model, device="cpu", to_numpy=True)
         self._docs.extend(docs)
-        return DocumentArray(self._docs[0])
+        return DocumentArray(self._docs[-1])
 
     @requests(on='/search')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):

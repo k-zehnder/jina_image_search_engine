@@ -1,4 +1,5 @@
 import os
+import glob
 import torchvision
 from jina import Flow
 from shutil import rmtree
@@ -8,6 +9,14 @@ import imutils
 
 from .resultsmontage import ResultsMontage
 
+
+def my_input(DATA_DIR):
+    image_uris = glob.glob(DATA_DIR)
+    for image_uri in image_uris:
+        yield Document(uri=image_uri)
+
+def print_mean_results(resp):
+    print(resp.to_dict()["data"][0]["text"])
 
 def print_response_parameters(resp):
     print(f'{resp.to_dict()["parameters"]}')
