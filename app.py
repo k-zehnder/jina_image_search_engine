@@ -23,23 +23,18 @@ f = (
     .add(uses=MyMeans)
 )
 
-def main() -> None: # args
+def main() -> None:
     indexing_documents = generate_docs(DATA_DIR)
     query = DocumentArray(indexing_documents[0])
 
     with f:
-        # index()
         f.post("/index", inputs=indexing_documents)
 
-        # search(limit)
         res = f.post("/search", parameters={'limit': 9}, inputs=query)
-        
-        # status()
+
         f.post("/status", inputs=[])
 
-        # means(indexing_documents)
-        means = f.post("/means", inputs=DocumentArray(indexing_documents), on_done=print_mean_results)
-        # print("means", means[0].text)
+        f.post("/means", inputs=DocumentArray(indexing_documents), on_done=print_mean_results)
 
     show_montage(query, res)
 
