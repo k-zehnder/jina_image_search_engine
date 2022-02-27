@@ -8,6 +8,9 @@ from docarray import DocumentArray, Document
 
 
 class MyMeans(Executor):
+    """
+    Executor with basic mean height (note: not actually mean of pixels)
+    """
     def __init__(self, parameter=True, **kwargs):
         super().__init__(**kwargs)
         self.parameter = parameter
@@ -16,8 +19,7 @@ class MyMeans(Executor):
     def means(self, docs: 'DocumentArray', **kwargs):
         heights = [np.mean(doc.tensor) for doc in docs]
         format_txt = f"mean of means for pixel height: {np.mean(heights)}"
-        da = Document(text=format_txt)
-        return DocumentArray(da)         
+        return DocumentArray(Document(text=format_txt))        
 
 class MyIndexer(Executor):
     """
