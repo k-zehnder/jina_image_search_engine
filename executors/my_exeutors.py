@@ -68,18 +68,3 @@ class MyMeans(Executor):
         format_txt = f"mean of means for pixel height: {np.mean(heights)}"
         return DocumentArray(Document(text=format_txt))        
 
-class MyConverter(Executor):
-    """
-    Convert DocumentArrays removing tensor and reshaping tensor as image
-    """
-
-    @requests
-    def convert(self, docs: 'DocumentArray', **kwargs):
-        """
-        Remove tensor and reshape documents as squared images
-        :param docs: documents to modify
-        :param kwargs: other keyword arguments
-        """
-        for doc in docs:
-            doc.convert_image_tensor_to_uri()
-            doc.pop('tensor')

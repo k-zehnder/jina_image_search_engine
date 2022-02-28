@@ -60,6 +60,3 @@ def show_montage(query, res):
         cv2.imshow("Results", imutils.resize(montage.montage, height=500))
         cv2.waitKey(0)
     cv2.destroyAllWindows()
-
-# TODO: functionalize me
-# print(f"query_uri: {query[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
