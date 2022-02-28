@@ -1,9 +1,5 @@
-import os
-import glob
-import torchvision
 from jina import Flow
 from shutil import rmtree
-from docarray import DocumentArray, Document
 import cv2
 import imutils
 import typer
@@ -14,7 +10,6 @@ from image_helpers.resultsmontage import ResultsMontage
 from image_helpers.utils import print_response_parameters, print_match_results, print_mean_results, show_montage, my_input, preprocess_img
 from executors.my_exeutors import MyMeans, MyIndexer
 
-from PIL import Image
 
 DATA_DIR = "./data/flag_imgs/*.jpg"
 
@@ -29,11 +24,10 @@ f = (
 
 @app.command()
 def main() -> None:
-    typer.echo(f"[INFO] running.")
-
     # query preprocessing should be in flow, but for clarity in client
     query = preprocess_img("france_6.jpg") 
-
+    console.print("[bold green]Running montage[/bold green]!", " 🚩")
+    
     with f:
         f.post("/index", inputs=my_input(DATA_DIR))
         
