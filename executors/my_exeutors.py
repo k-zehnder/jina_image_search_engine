@@ -65,6 +65,6 @@ class MyMeans(Executor):
     def means(self, docs: 'DocumentArray', **kwargs):
         docs = utils.prepare_docs(docs)
         heights = [np.mean(doc.tensor) for doc in docs]
-        format_txt = f"mean of means for pixel height: {np.mean(heights)}"
+        format_txt = f"mean of means for pixel height: {np.mean(heights):.2f}"
         return DocumentArray(Document(text=format_txt))        
 

@@ -41,7 +41,7 @@ def print_match_results(da):
     data = da.to_dict()
     for d in data:
         for m in d["matches"]:
-            print(f"query_uri: {d['uri']}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
+            print(f"query_uri: {d['uri']}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']:.2f}")
 
 def show_montage(query, res):
     # load the query image, display it

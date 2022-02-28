@@ -14,6 +14,7 @@ from image_helpers.resultsmontage import ResultsMontage
 from image_helpers.utils import print_response_parameters, print_match_results, print_mean_results, show_montage, my_input, preprocess_img
 from executors.my_exeutors import MyMeans, MyIndexer
 
+from PIL import Image
 
 DATA_DIR = "./data/flag_imgs/*.jpg"
 
@@ -46,5 +47,3 @@ def main() -> None:
 
 if __name__ == "__main__":
     app()
-
-
