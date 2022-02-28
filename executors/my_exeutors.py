@@ -1,9 +1,7 @@
-import os
-from sqlite3 import paramstyle
 from typing import Dict
 import torchvision 
-
 import numpy as np
+
 from jina import Executor, requests
 from docarray import DocumentArray, Document
 
@@ -12,23 +10,6 @@ from image_helpers import utils
 
 DATA_DIR = "./data/flag_imgs/*.jpg"
 
-
-class MyMeans(Executor):
-    """
-    Executor with basic mean height (note: not actually mean of pixels)
-    """
-    def __init__(self, parameter=True, **kwargs):
-        super().__init__(**kwargs)
-        self.parameter = parameter
-
-    @requests(on='/means')
-    def means(self, docs: 'DocumentArray', **kwargs):
-        docs.apply(utils.preproc)
-        model = torchvision.models.resnet50(pretrained=True)
-        docs.embed(model, device="cpu", to_numpy=True)
-        heights = [np.mean(doc.tensor) for doc in docs]
-        format_txt = f"mean of means for pixel height: {np.mean(heights)}"
-        return DocumentArray(Document(text=format_txt))        
 
 class MyIndexer(Executor):
     """
@@ -46,10 +27,7 @@ class MyIndexer(Executor):
         :param docs: DocumentArray containing Documents
         :param kwargs: other keyword arguments
         """
-        docs.apply(utils.preproc)
-        model = torchvision.models.resnet50(pretrained=True)
-        docs.embed(model, device="cpu", to_numpy=True)
-        self._docs.extend(docs)
+        self._docs.extend(utils.prepare_docs(docs))
 
     @requests(on='/search')
     def search(self, docs: 'DocumentArray', parameters: Dict, **kwargs):
@@ -57,10 +35,8 @@ class MyIndexer(Executor):
         right_da = self._docs
         left_da = DocumentArray(docs[0]) # query
 
-        # match document arrays by use of embedding (feature vector similarity)
+        # match query to docs we have indexed already at "/index"
         left_da.match(right_da, limit=parameters["limit"])
-
-        # return AFTER matching
         return DocumentArray(left_da)
      
     @requests(on='/status')
@@ -75,6 +51,21 @@ class MyIndexer(Executor):
         Stores the DocumentArray to disk
         """
         self._docs.save("./")
+
+class MyMeans(Executor):
+    """
+    Executor with basic mean height (note: not actually mean of pixels)
+    """
+    def __init__(self, parameter=True, **kwargs):
+        super().__init__(**kwargs)
+        self.parameter = parameter
+
+    @requests(on='/means')
+    def means(self, docs: 'DocumentArray', **kwargs):
+        docss = utils.prepare_docs(docs)
+        heights = [np.mean(doc.tensor) for doc in docs]
+        format_txt = f"mean of means for pixel height: {np.mean(heights)}"
+        return DocumentArray(Document(text=format_txt))        
 
 class MyConverter(Executor):
     """

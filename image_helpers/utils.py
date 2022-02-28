@@ -1,4 +1,5 @@
 import glob
+from multiprocessing.spawn import prepare
 import torchvision
 from shutil import rmtree
 from docarray import DocumentArray, Document
@@ -20,13 +21,15 @@ def my_input(DATA_DIR):
     for image_uri in image_uris:
         yield Document(uri=image_uri)
 
-def preprocess_img(image):
-    image_path = f"/home/inthrustwetrust71/Desktop/jina_image_search_engine/data/flag_imgs/{image}"
-    docs = DocumentArray(Document(uri=image_path))
+def prepare_docs(docs):
     docs.apply(preproc)
     model = torchvision.models.resnet50(pretrained=True)
     docs.embed(model, device="cpu", to_numpy=True)
     return docs
+
+def preprocess_img(image):
+    image_path = f"/home/inthrustwetrust71/Desktop/jina_image_search_engine/data/flag_imgs/{image}"
+    return prepare_docs(DocumentArray(Document(uri=image_path)))
 
 def print_mean_results(resp):
     print(resp.to_dict()["data"][0]["text"])
