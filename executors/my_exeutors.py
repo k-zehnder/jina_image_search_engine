@@ -23,7 +23,7 @@ class MyIndexer(Executor):
 
     @requests(on='/index')
     def index(self, docs: 'DocumentArray', **kwargs):
-        """Extend self._docs
+        """
         :param docs: DocumentArray containing Documents
         :param kwargs: other keyword arguments
         """
@@ -62,7 +62,7 @@ class MyMeans(Executor):
 
     @requests(on='/means')
     def means(self, docs: 'DocumentArray', **kwargs):
-        docss = utils.prepare_docs(docs)
+        docs = utils.prepare_docs(docs)
         heights = [np.mean(doc.tensor) for doc in docs]
         format_txt = f"mean of means for pixel height: {np.mean(heights)}"
         return DocumentArray(Document(text=format_txt))        
