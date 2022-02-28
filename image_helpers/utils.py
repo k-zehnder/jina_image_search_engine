@@ -1,14 +1,11 @@
-import os
 import glob
 import torchvision
-from jina import Flow
 from shutil import rmtree
 from docarray import DocumentArray, Document
 import cv2
 import imutils
 
 from .resultsmontage import ResultsMontage
-
 
 
 # Convert to tensor, normalize so they're all similar enough
@@ -23,7 +20,8 @@ def my_input(DATA_DIR):
     for image_uri in image_uris:
         yield Document(uri=image_uri)
 
-def preprocess_img(image_path):
+def preprocess_img(image):
+    image_path = f"/home/inthrustwetrust71/Desktop/jina_image_search_engine/data/flag_imgs/{image}"
     docs = DocumentArray(Document(uri=image_path))
     docs.apply(preproc)
     model = torchvision.models.resnet50(pretrained=True)

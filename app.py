@@ -27,16 +27,15 @@ def main() -> None:
         with f:
             f.post("/index", inputs=my_input(DATA_DIR))
             
-            query = preprocess_img("/home/inthrustwetrust71/Desktop/jina_image_search_engine/data/flag_imgs/france_6.jpg")
-            print(query)
+            query = preprocess_img("france_6.jpg")
 
-            # res = f.post("/search", parameters={'limit': 9}, inputs=query)
+            res = f.post("/search", parameters={'limit': 9}, inputs=query)
 
-            # f.post("/status", inputs=[])
+            f.post("/status", inputs=[])
 
-            # f.post("/means", inputs=my_input(DATA_DIR), on_done=print_mean_results)
+            f.post("/means", inputs=my_input(DATA_DIR), on_done=print_mean_results)
 
-        # show_montage(query, res)
+        show_montage(query, res)
 
     except Exception as e:
         print(e)
