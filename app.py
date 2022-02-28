@@ -23,23 +23,22 @@ f = (
 )
 
 def main() -> None:
-    try:
-        with f:
-            f.post("/index", inputs=my_input(DATA_DIR))
-            
-            # query should be in flow, but for clarity in client
-            query = preprocess_img("france_6.jpg") 
-            res = f.post("/search", parameters={'limit': 9}, inputs=query)
+    # query should be in flow, but for clarity in client
+    query = preprocess_img("france_6.jpg") 
 
-            f.post("/status", inputs=[])
+    with f:
+        f.post("/index", inputs=my_input(DATA_DIR))
+        
+        res = f.post("/search", parameters={'limit': 9}, inputs=query)
 
-            f.post("/means", inputs=my_input(DATA_DIR), on_done=print_mean_results)
+        f.post("/status", inputs=[])
 
-        show_montage(query, res)
+        f.post("/means", inputs=my_input(DATA_DIR), on_done=print_mean_results)
 
-    except Exception as e:
-        print(e)
+    show_montage(query, res)
 
 if __name__ == "__main__":
-    main()
+    query = preprocess_img("france_6.jpg") 
+
+    main(query)
 
