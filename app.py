@@ -27,7 +27,7 @@ def main() -> None:
         with f:
             f.post("/index", inputs=my_input(DATA_DIR))
             
-            # NOTE: heavy computational tasks ideally should be in flow?
+            # query should be in flow, but for clarity in client
             query = preprocess_img("france_6.jpg") 
             res = f.post("/search", parameters={'limit': 9}, inputs=query)
 
