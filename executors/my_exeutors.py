@@ -37,6 +37,7 @@ class MyIndexer(Executor):
 
         # match query to docs we have indexed already at "/index"
         left_da.match(right_da, limit=parameters["limit"])
+        utils.print_match_results(left_da)
         return DocumentArray(left_da)
      
     @requests(on='/status')

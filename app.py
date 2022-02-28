@@ -38,7 +38,5 @@ def main() -> None:
     show_montage(query, res)
 
 if __name__ == "__main__":
-    query = preprocess_img("france_6.jpg") 
-
-    main(query)
+    main()
 

@@ -28,7 +28,7 @@ def prepare_docs(docs):
     return docs
 
 def preprocess_img(image):
-    image_path = f"/home/inthrustwetrust71/Desktop/jina_image_search_engine/data/flag_imgs/{image}"
+    image_path = f"./data/flag_imgs/{image}"
     return prepare_docs(DocumentArray(Document(uri=image_path)))
 
 def print_mean_results(resp):
@@ -37,8 +37,8 @@ def print_mean_results(resp):
 def print_response_parameters(resp):
     print(f'{resp.to_dict()["parameters"]}')
 
-def print_match_results(resp):
-    data = resp.to_dict()["data"]
+def print_match_results(da):
+    data = da.to_dict()
     for d in data:
         for m in d["matches"]:
             print(f"query_uri: {d['uri']}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
