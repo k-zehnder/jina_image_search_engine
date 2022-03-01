@@ -1,10 +1,9 @@
 import glob
-from multiprocessing.spawn import prepare
 import torchvision
-from shutil import rmtree
 from docarray import DocumentArray, Document
 import cv2
 import imutils
+from imutils import paths
 
 from .resultsmontage import ResultsMontage
 
@@ -47,16 +46,21 @@ def show_montage(query, res):
     # load the query image, display it
     query_cv2 = cv2.imread(query[0].uri)
     cv2.imshow("Query", imutils.resize(query_cv2, width=200))
-    cv2.waitKey(0)
-    
-    res = res.to_dict()[0]
-    montage = ResultsMontage((240, 320), 5, 20)
-    for i, m in enumerate(res["matches"]):
-        result = cv2.imread(m["uri"]) 
-        score = m['scores']['cosine']['value']
-        montage.addResult(result, text=f"#{i+1} > {score:.2f}")
 
-        # show the output image of results
+    # get paths which are same country as query
+    imagePaths = sorted(list(paths.list_images("./data/flag_imgs")))
+    wanted = [path for path in imagePaths if "france" in path]
+
+    # show the output image of results
+    montage = ResultsMontage((240, 320), 5, 20)
+    for (i, match) in enumerate(res.to_dict()[0]["matches"]):
+        result = cv2.imread(match["uri"]) 
+        score = match['scores']['cosine']['value']
+        
+        montage.addResult(result, text=f"#{i+1} > {score:.2f}",
+        highlight=match["uri"] in wanted)
+
         cv2.imshow("Results", imutils.resize(montage.montage, height=500))
         cv2.waitKey(0)
+    
     cv2.destroyAllWindows()
