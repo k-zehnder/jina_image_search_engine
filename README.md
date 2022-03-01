@@ -14,7 +14,7 @@ git clone https://github.com/k-zehnder/jina_image_search_engine
 
 ### Setup
 
-Edit `app.py` to set query image and result limit
+Edit `app.py` to set query image and result limit.
 
 ```shell
 cd jina_image_search_engine
