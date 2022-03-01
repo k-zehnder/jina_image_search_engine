@@ -35,7 +35,7 @@ class MyIndexer(Executor):
         right_da = self._docs
         left_da = DocumentArray(docs[0]) # query
 
-        # match query to docs we have indexed already at "/index"
+        # match query to docs we have already indexed at "/index"
         left_da.match(right_da, limit=parameters["limit"])
         utils.print_match_results(left_da)
         return DocumentArray(left_da)
