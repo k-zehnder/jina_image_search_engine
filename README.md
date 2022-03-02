@@ -25,3 +25,9 @@ python app.py
 ```
 
 ## What is this?
+Jina makes it easy and fun to build state of the art image search engines. This simple project uses the power of Jina to build a dataset of images that is *visually searchable*. This means as opposed to text-based searching like we are familiar with on google/bing/duckduckgo, we can leverage Jina to literally search for images with another image, absent of any textual hints. Jina is as awesome as it sounds, and it enables advanced intelligence on everything from PDFs to mp3's.
+
+## How does it work?
+Images of flags from different countries were first collected and organized. Each image was then read from disk and stored inside a DocumentArray, which a Jina `Executor` will eventually operate on inside a Jina `Flow`. 
+
+We then extract features from each image describing their contents quantitatively using a cool property of DocumentArray's which allows them to embed pre-trained neural networks. We capitalize on this ability for DocumentArray's to quantify the contents of an image so that we can build a searchable database of "described" images, typically referred to as the indexing process. After we have an indexed dataset, we can then use a query image to *visually search* our dataset and find similiar images. 
