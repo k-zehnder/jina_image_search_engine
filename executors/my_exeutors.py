@@ -1,6 +1,4 @@
-from turtle import left
 from typing import Dict
-import torchvision 
 import numpy as np
 from imutils import paths
 
@@ -13,6 +11,7 @@ from image_helpers import utils
 DATA_DIR = "./data/flag_imgs/left/*.jpg"
 DATA_DIR_RIGHT = "./data/flag_imgs/right/*.jpg" 
 DATA_DIR_AUGMENTED_RIGHT = "./data/flag_imgs/augmented_right/*.jpg" 
+
 
 class MyIndexer(Executor):
     """
