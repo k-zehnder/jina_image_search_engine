@@ -46,22 +46,23 @@ class MyIndexer(Executor):
      
     @requests(on='/evaluate')
     def evaluate(self, **kwargs):
-        model = torchvision.models.resnet50(pretrained=True)
+        # read
         left_da = DocumentArray.from_files(DATA_DIR)
         right_da = DocumentArray.from_files(DATA_DIR_AUGMENTED_RIGHT)
 
+        # prepare
         left_da = utils.prepare_docs(left_da)
         right_da = utils.prepare_docs(right_da)
         
+        # match
         left_da.match(right_da, limit=9)
-
         for d in left_da:
             for m in d.matches:
                 print(d.uri, m.uri, m.scores['cosine'].value)
 
+       # evaluate
         groundtruth = DocumentArray(
             Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'augmented_right'))]) for d in left_da)
-       
         for k in range(1, 6):
             print(f'precision@{k}',
                 left_da.evaluate(
