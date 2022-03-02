@@ -34,11 +34,11 @@ def main() -> None:
         
         res = f.post("/search", parameters={'limit': 9}, inputs=query)
 
-        f.post("/evaluate", inputs=my_input(DATA_DIR_AUGMENTED_RIGHT))
+        f.post("/evaluate")
 
         f.post("/status", inputs=[])
 
-        f.post("/means", on_done=print_mean_results)
+        f.post("/means", on_done=print_mean_results,  inputs=my_input(DATA_DIR))
 
     show_montage(query, res)
 
