@@ -12,7 +12,7 @@ from image_helpers import utils
 
 DATA_DIR = "./data/flag_imgs/left/*.jpg"
 DATA_DIR_RIGHT = "./data/flag_imgs/right/*.jpg" 
-
+DATA_DIR_AUGMENTED_RIGHT = "./data/flag_imgs/augmented_right/*.jpg" 
 
 class MyIndexer(Executor):
     """
@@ -47,8 +47,11 @@ class MyIndexer(Executor):
     @requests(on='/evaluate')
     def evaluate(self, **kwargs):
         model = torchvision.models.resnet50(pretrained=True)
-        left_da = DocumentArray.from_files("./data/flag_imgs/left/*.jpg").apply(utils.preproc).embed(model, device='cpu')
-        right_da = DocumentArray.from_files("./data/flag_imgs/augmented_right/*.jpg").apply(utils.preproc).embed(model, device='cpu')
+        left_da = DocumentArray.from_files(DATA_DIR)
+        right_da = DocumentArray.from_files(DATA_DIR_AUGMENTED_RIGHT)
+
+        left_da = utils.prepare_docs(left_da)
+        right_da = utils.prepare_docs(right_da)
         
         left_da.match(right_da, limit=9)
 
@@ -60,11 +63,11 @@ class MyIndexer(Executor):
             Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'augmented_right'))]) for d in left_da)
        
         for k in range(1, 6):
-            print(f'recall@{k}',
+            print(f'precision@{k}',
                 left_da.evaluate(
                     groundtruth,
                     hash_fn=lambda d: d.uri,
-                    metric='recall_at_k',
+                    metric='precision_at_k',
                     k=k,
                     max_rel=1))
 

@@ -11,6 +11,8 @@ from executors.my_exeutors import MyMeans, MyIndexer
 
 DATA_DIR = "./data/flag_imgs/left/*.jpg"
 DATA_DIR_RIGHT = "./data/flag_imgs/right/*.jpg" 
+DATA_DIR_AUGMENTED_RIGHT = "./data/flag_imgs/augmented_right/*.jpg" 
+
 
 console = Console()
 app = typer.Typer()
@@ -32,11 +34,11 @@ def main() -> None:
         
         res = f.post("/search", parameters={'limit': 9}, inputs=query)
 
-        f.post("/evaluate")
+        f.post("/evaluate", inputs=my_input(DATA_DIR_AUGMENTED_RIGHT))
 
         f.post("/status", inputs=[])
 
-        f.post("/means", inputs=my_input(DATA_DIR_RIGHT), on_done=print_mean_results)
+        f.post("/means", on_done=print_mean_results)
 
     show_montage(query, res)
 
