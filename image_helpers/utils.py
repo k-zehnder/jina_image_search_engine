@@ -27,7 +27,7 @@ def prepare_docs(docs):
     return docs
 
 def preprocess_img(image):
-    image_path = f"./data/flag_imgs/{image}"
+    image_path = f"./data/flag_imgs/left/{image}"
     return prepare_docs(DocumentArray(Document(uri=image_path)))
 
 def print_mean_results(resp):
@@ -37,6 +37,7 @@ def print_response_parameters(resp):
     print(f'{resp.to_dict()["parameters"]}')
 
 def print_match_results(da):
+    # had trouble putting as on_done parameter for /search, so put inside flow. must address this.
     data = da.to_dict()
     for d in data:
         for m in d["matches"]:
@@ -49,16 +50,16 @@ def show_montage(query, res):
 
     # get paths which are same country as query
     imagePaths = sorted(list(paths.list_images("./data/flag_imgs")))
-    wanted = [path for path in imagePaths if "france" in path]
+    wantedPaths = [path for path in imagePaths if "france" in path]
 
-    # show the output image of results
+    # build montage
     montage = ResultsMontage((240, 320), 5, 20)
     for (i, match) in enumerate(res.to_dict()[0]["matches"]):
         result = cv2.imread(match["uri"]) 
         score = match['scores']['cosine']['value']
         
         montage.addResult(result, text=f"#{i+1} > {score:.2f}",
-        highlight=match["uri"] in wanted)
+        highlight=match["uri"] in wantedPaths)
 
         cv2.imshow("Results", imutils.resize(montage.montage, height=500))
         cv2.waitKey(0)
