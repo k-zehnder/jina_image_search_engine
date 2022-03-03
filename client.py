@@ -6,7 +6,6 @@ import os
 import torchvision
 from shutil import rmtree
 
-from my_exeutors import MyMeans, MyIndexer
 
 # First let’s define a client:
 client = Client(host='localhost', protocol='http', port=8080)
@@ -20,7 +19,7 @@ def preproc(d: Document):
              .set_image_tensor_normalization()  # normalize color 
              .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
-indexing_documents = DocumentArray.from_files("./flag_imgs/*.jpg", size=10000)
+indexing_documents = DocumentArray.from_files("./data/Images_Full/*.jpg", size=10000)
 indexing_documents.apply(preproc)
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 

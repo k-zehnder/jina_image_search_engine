@@ -1,13 +1,7 @@
-from operator import index
 from jina import Flow
-from docarray import DocumentArray
-from docarray import DocumentArray, Document
-from jina import Executor, requests
 
 # for docker
 #  sudo docker-compose -f docker-compose.yml up -d --build
-
-from my_exeutors import MyExec, MyIndexer
 
 
 f = (
@@ -28,6 +22,6 @@ f = (
 )
 
 
-# f.to_docker_compose_yaml()
+f.to_docker_compose_yaml()
 
 
