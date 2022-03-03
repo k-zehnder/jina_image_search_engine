@@ -22,6 +22,6 @@ f = (
 )
 
 
-f.to_docker_compose_yaml()
+# f.to_docker_compose_yaml()
 
 

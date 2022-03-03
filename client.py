@@ -19,7 +19,7 @@ def preproc(d: Document):
              .set_image_tensor_normalization()  # normalize color 
              .set_image_tensor_channel_axis(-1, 0))  # switch color axis for the PyTorch model later
 
-indexing_documents = DocumentArray.from_files("./data/Images_Full/*.jpg", size=10000)
+indexing_documents = DocumentArray.from_files("./data/flag_imgs/left/*.jpg", size=10000)
 indexing_documents.apply(preproc)
 model = torchvision.models.resnet50(pretrained=True)  # load ResNet50
 
@@ -44,7 +44,17 @@ for idx, match in enumerate(matches):
     score = match.scores['cosine'].value
     print(f'> {idx:>2d}({score:.2f}). {match.uri}')
 
-
-res = queried_docs.to_dict()[0]
-for m in res["matches"]:
-    print(f"query_uri: {query_doc[0].uri}, match_uri: {m['uri']}, scores: {m['scores']['cosine']['value']}")
+# cpy = DocumentArray(indexing_documents, copy=True)
+for i in range(len(indexing_documents)):
+    query_doc = indexing_documents[i]
+    queried_docs = client.post("/search", inputs=[query_doc])
+    matches = queried_docs[0].matches
+    print(f'matches: {matches}')
+    print(f'query: {query_doc.uri}')
+    print(f'first: {queried_docs[0].uri}')
+    
+    for d in queried_docs:
+        for m in d.matches:
+            print(d.uri, m.uri, m.scores['cosine'].value)
+    print()
+    print()
