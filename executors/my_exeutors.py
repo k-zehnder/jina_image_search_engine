@@ -43,34 +43,6 @@ class MyIndexer(Executor):
         utils.print_match_results(left_da)
         return DocumentArray(left_da)
      
-    @requests(on='/evaluate')
-    def evaluate(self, **kwargs):
-        # read
-        left_da = DocumentArray.from_files(DATA_DIR)
-        right_da = DocumentArray.from_files(DATA_DIR_AUGMENTED_RIGHT)
-
-        # prepare
-        left_da = utils.prepare_docs(left_da)
-        right_da = utils.prepare_docs(right_da)
-        
-        # match
-        left_da.match(right_da, limit=9)
-        for d in left_da:
-            for m in d.matches:
-                print(d.uri, m.uri, m.scores['cosine'].value)
-
-       # evaluate
-        groundtruth = DocumentArray(
-            Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'augmented_right'))]) for d in left_da)
-        for k in range(1, 6):
-            print(f'precision@{k}',
-                left_da.evaluate(
-                    groundtruth,
-                    hash_fn=lambda d: d.uri,
-                    metric='precision_at_k',
-                    k=k,
-                    max_rel=1))
-
     @requests(on='/status')
     def status(self, **kwargs):
         """
@@ -83,6 +55,35 @@ class MyIndexer(Executor):
         Stores the DocumentArray to disk
         """
         self._docs.save("./")
+
+class MySimulator(Executor):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    @requests(on='/evaluate')
+    def evaluate(self, **kwargs):
+        # read
+        left_da = DocumentArray.from_files(DATA_DIR)
+        right_da = DocumentArray.from_files(DATA_DIR_AUGMENTED_RIGHT)
+
+        # prepare
+        left_da = utils.prepare_docs(left_da)
+        right_da = utils.prepare_docs(right_da)
+        
+        # match
+        left_da.match(right_da, limit=9)
+        groundtruth = DocumentArray(
+            Document(uri=d.uri, matches=[Document(uri=d.uri.replace('left', 'augmented_right'))]) for d in left_da)
+
+       # evaluate
+        for k in range(1, 6):
+            print(f'precision@{k}',
+                left_da.evaluate(
+                    groundtruth,
+                    hash_fn=lambda d: d.uri,
+                    metric='precision_at_k',
+                    k=k,
+                    max_rel=1))
 
 class MyMeans(Executor):
     """

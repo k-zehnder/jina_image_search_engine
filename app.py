@@ -6,13 +6,11 @@ from rich.console import Console
 from rich.table import Table
 
 from image_helpers.utils import print_mean_results, show_montage, my_input, preprocess_img
-from executors.my_exeutors import MyMeans, MyIndexer
+from executors.my_exeutors import DATA_DIR_AUGMENTED_RIGHT, MyMeans, MyIndexer, MySimulator
 
 
 DATA_DIR = "./data/flag_imgs/left/*.jpg"
-DATA_DIR_RIGHT = "./data/flag_imgs/right/*.jpg" 
-DATA_DIR_AUGMENTED_RIGHT = "./data/flag_imgs/augmented_right/*.jpg" 
-
+DATA_DIR_AUGMENTED_RIGHT = "./data/flag_imgs/augmented_right/*.jpg"
 
 console = Console()
 app = typer.Typer()
@@ -21,6 +19,7 @@ f = (
     Flow(port_expose=8080, protocol='http')
     .add(uses=MyIndexer)
     .add(uses=MyMeans)
+    .add(uses=MySimulator)
 )
 
 @app.command()
