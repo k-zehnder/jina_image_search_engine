@@ -1,160 +1,41 @@
-**/data/*
+# jina_image_search_engine
+Building a basic image search engine with Jina
 
-### Created by https://www.gitignore.io
-### Python ###
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+## Example 1
+![Work in progress](docs/demo.png)
 
-# C extensions
-*.so
+## Example 2
+![Work in progress](docs/aviation_usage_demo.png)
 
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-share/python-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-MANIFEST
+## Example 3
+![Work in progress](docs/aviation_demo2.png)
 
-# PyInstaller
-#  Usually these files are written by a python script from a template
-#  before PyInstaller builds the exe, so as to inject date/other infos into it.
-*.manifest
-*.spec
+## Instructions
 
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
+### Clone the project
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
+```
+git clone https://github.com/k-zehnder/jina_image_search_engine
+```
 
-# Translations
-*.mo
-*.pot
+### Setup
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
+Edit `app.py` to set query image and result limit.
 
-# Flask stuff:
-instance/
-.webassets-cache
+```shell
+cd jina_image_search_engine
+python -m venv venv # optional
+source venv/bin/activate # optional
+pip install -r requirements.txt
+python app.py
+```
 
-# Scrapy stuff:
-.scrapy
+## What is this?
+Jina makes it easy and fun to build state of the art image search engines. This simple project uses the power of Jina to build a dataset of images that is *visually searchable*. This means as opposed to text-based searching like we are familiar with on google/bing/duckduckgo, we can leverage Jina to literally search for images with another image, absent of any textual hints. Jina is as awesome as it sounds, and it enables advanced intelligence on everything from PDFs to mp3's.
 
-# Sphinx documentation
-docs/_build/
+## How does it work?
+The Jina framework is extremely easy-to-use and intuitive. `Flow` objects are responsible for chaining together a collection of `Executors`, which are essentially python classes that perform lighting fast operations on a list-like data-structure in the Jina AI ecosystem called a `DocArray`.
 
-# PyBuilder
-.pybuilder/
-target/
+Inside the `Flow`, we then extract features from each image describing their contents quantitatively. This is facilitated by a cool property of DocumentArray's which allows them to embed pre-trained neural networks. We capitalize on this ability for DocumentArray's to quantify the contents of an image so that we can build a searchable database of "described" images, typically referred to as the indexing process. 
 
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-#   For a library or package, you might want to ignore these files since the code is
-#   intended to run in multiple environments; otherwise, check them in:
-# .python-version
-
-# pipenv
-#   According to pypa/pipenv#598, it is recommended to include Pipfile.lock in version control.
-#   However, in case of collaboration, if having platform-specific dependencies or dependencies
-#   having no cross-platform support, pipenv may install dependencies that don't work, or not
-#   install all needed dependencies.
-#Pipfile.lock
-
-# poetry
-#   Similar to Pipfile.lock, it is generally recommended to include poetry.lock in version control.
-#   This is especially recommended for binary packages to ensure reproducibility, and is more
-#   commonly ignored for libraries.
-#   https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control
-#poetry.lock
-
-# PEP 582; used by e.g. github.com/David-OConnor/pyflow
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# SageMath parsed files
-*.sage.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyproject
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# PyCharm
-#  JetBrains specific template is maintainted in a separate JetBrains.gitignore that can
-#  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
-#  and can be added to the global gitignore or merged into this file.  For a more nuclear
-#  option (not recommended) you can uncomment the following to ignore the entire idea folder.
-#.idea/
-
-venv
-cache
-data
+Now that we have our feature vectors extracted and stored, our final step will be to extract features from a query image to *visually search* them against our database of features. This will take our query image, described as a list of numbers, and compare it to each image in our indexed dataset, outputting a "distance" metric (cosine similarity) which represents how "similar" the query image feature vector is to each image in our indexed dataset. The ability to abstractly represent an image as a list of numbers, and then compare these numbers for similarity, is the real "magic" behind how this all works.
