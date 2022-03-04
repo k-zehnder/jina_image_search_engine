@@ -5,10 +5,10 @@ Building a basic image search engine with Jina
 ![Work in progress](docs/demo.png)
 
 ## Example 2
-![Work in progress](docs/aviation_usage_demo.png)
+![Work in progress](docs/aviation_demo2.png)
 
 ## Example 3
-![Work in progress](docs/aviation_demo2.png)
+![Work in progress](docs/aviation_usage_demo.png)
 
 ## Instructions
 
