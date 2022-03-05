@@ -2,7 +2,7 @@
 Building a basic image search engine with Jina
 
 ## Example 1
-Note green highlight on flags which match country of query
+#### Note green highlight on flags which match country of query
 ![Work in progress](docs/demo.png)
 
 ## Example 2
