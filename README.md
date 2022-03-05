@@ -1,16 +1,16 @@
 # jina_image_search_engine
 Building a basic image search engine with Jina
 
-## Example 1 -- Match flags
+## Example 1
 Note green highlight on flags which match country of query
 ![Work in progress](docs/demo.png)
 
-## Example 2 -- Match 777
-Note green highlight on 777 jets only like query. Similar 737 are not highlighted.
+## Example 2
+#### Note green highlight on 777 jets only like query. Similar 737 are not highlighted.
 ![Work in progress](docs/aviation_demo2.png)
 
-## Example 3 -- Match 737
-Note green highlight on 747 jets only like query. Similar 777 are not highlighted.
+## Example 3
+#### Note green highlight on 747 jets only like query. Similar 777 are not highlighted.
 ![Work in progress](docs/aviation_usage_demo.png)
 
 ## Instructions
